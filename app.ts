@@ -65,7 +65,7 @@ async function executeAvaCloudExample() {
   await printProjectTotalPriceAndPositionCount();
 }
 
-function getGaebFile(): FileParameter {
+function getGaebFile(): Buffer {
   const gaebFileBuffer = readFileSync(gaebInputFile);
   const fileParam: FileParameter = {
     value: gaebFileBuffer,
@@ -74,7 +74,9 @@ function getGaebFile(): FileParameter {
       contentType: 'application/octet-stream'
     }
   };
-  return fileParam;
+  // There's a slight mismatch in the that a Buffer is declared
+  // in the generated API but actually a FileParameter is required
+  return fileParam as any as Buffer;
 }
 
 async function transformGaebToExcel() {
@@ -102,16 +104,25 @@ async function printProjectTotalPriceAndPositionCount() {
 }
 
 function getProjectTotalPrice(project: ProjectDto): number {
-  return project
-    .serviceSpecifications[0]
-    .totalPrice;
+  if (project.serviceSpecifications)
+  {
+    return project
+      .serviceSpecifications[0]
+      .totalPrice;
+  }
+  return 0;
 }
 
 function getProjectPositionCount(project: ProjectDto): number {
-  const servSpec = project
-    .serviceSpecifications[0];
-  const positionsCount = getPositionsInElementList(servSpec.elements);
-  return positionsCount;
+  if (project.serviceSpecifications) {
+    const servSpec = project
+      .serviceSpecifications[0];
+    if (servSpec.elements) {
+      const positionsCount = getPositionsInElementList(servSpec.elements);
+      return positionsCount;
+    }
+  }
+  return 0;
 }
 
 function getPositionsInElementList(elements: IElementDto[]): number {
