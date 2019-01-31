@@ -4,7 +4,8 @@ import {
   ProjectDto,
   IElementDto,
   PositionDto,
-  ServiceSpecificationGroupDto
+  ServiceSpecificationGroupDto,
+  AvaConversionApi
 } from '@dangl/avacloud-client-node';
 import { readFileSync, writeFileSync } from 'fs';
 import { post } from 'request';
@@ -61,11 +62,13 @@ async function executeAvaCloudExample() {
     console.log('No access token, exiting app.');
     return;
   }
+
   await transformGaebToExcel();
   await printProjectTotalPriceAndPositionCount();
+  await createNewGaebFile();
 }
 
-function getGaebFile(): Buffer {
+function getGaebFile(): FileParameter {
   const gaebFileBuffer = readFileSync(gaebInputFile);
   const fileParam: FileParameter = {
     value: gaebFileBuffer,
@@ -74,9 +77,7 @@ function getGaebFile(): Buffer {
       contentType: 'application/octet-stream'
     }
   };
-  // There's a slight mismatch in the that a Buffer is declared
-  // in the generated API but actually a FileParameter is required
-  return fileParam as any as Buffer;
+  return fileParam;
 }
 
 async function transformGaebToExcel() {
@@ -137,4 +138,40 @@ function getPositionsInElementList(elements: IElementDto[]): number {
     }
   });
   return positionsCount;
+}
+
+async function createNewGaebFile() {
+  const avaConversionApi = new AvaConversionApi();
+  avaConversionApi.accessToken = accessToken;
+
+  const avaProject = {
+    serviceSpecifications: [
+      {
+        elements: [
+          {
+            elementTypeDiscriminator: 'PositionDto',
+            shortText: 'Concrete Wall',
+            unitTag: 'm²',
+            quantityComponents: [
+              {
+                formula: '10'
+              }
+            ],
+            priceComponents: [
+              {
+                values: [
+                  {
+                    formula: '80'
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  const gaebCreationResponse = await avaConversionApi.avaConversionConvertToGaeb(<ProjectDto><any>avaProject);
+  writeFileSync('CreatedGaebFile.X86', gaebCreationResponse.body);
 }
