@@ -66,6 +66,7 @@ async function executeAvaCloudExample() {
   await transformGaebToExcel();
   await printProjectTotalPriceAndPositionCount();
   await createNewGaebFile();
+  await roundtripExampleGaebFile();
 }
 
 function getGaebFile(): FileParameter {
@@ -79,6 +80,20 @@ function getGaebFile(): FileParameter {
   };
   return fileParam;
 }
+
+async function roundtripExampleGaebFile() {
+  console.log('Converting sample GAEB file to AVA Project then back again to new GAEB file...');
+  const gaebConversionClient = new GaebConversionApi();
+  gaebConversionClient.accessToken = accessToken;
+  const fileParam = getGaebFile();
+  const conversionResult = await gaebConversionClient.gaebConversionConvertToAva(fileParam);
+  const avaConversionClient = new AvaConversionApi();
+  avaConversionClient.accessToken = accessToken;
+  const roundtrippedResult = await avaConversionClient.avaConversionConvertToGaeb(conversionResult.body);
+  console.log('Saving Excel conversion result to: Roundtrip.X86');
+  writeFileSync('Roundtrip.X86', roundtrippedResult.body);
+}
+
 
 async function transformGaebToExcel() {
   console.log('Transforming GAEB file to Excel...');

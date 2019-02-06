@@ -30,11 +30,12 @@ At the top of the `app.ts` file, the following parameters must be defined by you
 These are the credentials of your [**Dangl.Identity**](https://identity.dangl-it.com) OAuth2 client that is configured to access **AVA**Cloud.  
 If you don't have values for `ClientId` and `ClientSecret` yet, you can [check out the documentation](https://docs.dangl-it.com/Projects/AVACloud/latest/howto/registration/developer_signup.html) for instructions on how to register for **AVA**Cloud and create an OAuth2 client.
 
-This example app does three operations:
+This example app does four operations:
 
 1. The local GAEB file is transformed to Excel and saved next to the input file
 2. The local GAEB file is converted to the unified **Dangl.AVA** format and the total price as well as the number of positions in the bill of quantities is printed to the console.
 3. It creates a new GAEB file and saves it to `CreatedGaebFile.X86`. The GAEB file only has a single position in it and is in the latest GAEB XML format.
+4. It simulates the creation of a complex GAEB file with more content by first transforming the example file to a `ProjectDto` via **AVA**Cloud and then sending this again to the GAEB conversion endpoint, finally saving the result as `Roundtrip.X86`
 
 ---
 [License](./LICENSE.md)
