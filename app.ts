@@ -144,11 +144,12 @@ function getProjectPositionCount(project: ProjectDto): number {
 function getPositionsInElementList(elements: IElementDto[]): number {
   let positionsCount = 0;
   elements.forEach(element => {
-    if (element instanceof PositionDto) {
+    if (element.elementTypeDiscriminator ===  'PositionDto') {
       positionsCount++;
-    } else if (element instanceof ServiceSpecificationGroupDto) {
-      if (element.elements) {
-        positionsCount += getPositionsInElementList(element.elements);
+    } else if (element.elementTypeDiscriminator ===  'ServiceSpecificationGroupDto') {
+      const group = <ServiceSpecificationGroupDto>element;
+      if (group.elements) {
+        positionsCount += getPositionsInElementList(group.elements);
       }
     }
   });
