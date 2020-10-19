@@ -12,6 +12,8 @@ import { post } from 'request';
 
 const clientId = 'InsertYourClientId';
 const clientSecret = 'InsertYourClientSecret';
+const identityTokenUrl = 'https://identity.dangl-it.com/connect/token';
+const avacloudBaseUrl = 'https://avacloud-api.dangl-it.com';
 
 const gaebInputFile = 'GAEBXML_EN.X86';
 let accessToken: string;
@@ -28,7 +30,7 @@ async function getOAuth2AccessToken(): Promise<void> {
     return;
   }
   const clientCredentialsRequest = new Promise(function (resolve, reject) {
-    post('https://identity.dangl-it.com/connect/token', {
+    post(identityTokenUrl, {
       auth: {
         username: clientId,
         password: clientSecret
@@ -85,10 +87,12 @@ async function roundtripExampleGaebFile() {
   console.log('Converting sample GAEB file to AVA Project then back again to new GAEB file...');
   const gaebConversionClient = new GaebConversionApi();
   gaebConversionClient.accessToken = accessToken;
+  gaebConversionClient.basePath = avacloudBaseUrl;
   const fileParam = getGaebFile();
   const conversionResult = await gaebConversionClient.gaebConversionConvertToAva(fileParam);
   const avaConversionClient = new AvaConversionApi();
   avaConversionClient.accessToken = accessToken;
+  avaConversionClient.basePath = avacloudBaseUrl;
   const roundtrippedResult = await avaConversionClient.avaConversionConvertToGaeb(conversionResult.body);
   console.log('Saving Excel conversion result to: Roundtrip.X86');
   writeFileSync('Roundtrip.X86', roundtrippedResult.body);
@@ -99,6 +103,7 @@ async function transformGaebToExcel() {
   console.log('Transforming GAEB file to Excel...');
   const gaebConversionClient = new GaebConversionApi();
   gaebConversionClient.accessToken = accessToken;
+  gaebConversionClient.basePath = avacloudBaseUrl;
   const fileParam = getGaebFile();
   const conversionResult = await gaebConversionClient.gaebConversionConvertToExcel(fileParam, true, true, 'de');
   console.log('Saving Excel conversion result to:');
@@ -110,6 +115,7 @@ async function printProjectTotalPriceAndPositionCount() {
   console.log('Transforming GAEB file to AVA Project...');
   const gaebConversionClient = new GaebConversionApi();
   gaebConversionClient.accessToken = accessToken;
+  gaebConversionClient.basePath = avacloudBaseUrl;
   const fileParam = getGaebFile();
   // The avaProject variable is of type ProjectDto and contains the unified project model
   const avaProject = (await gaebConversionClient.gaebConversionConvertToAva(fileParam)).body;
@@ -120,8 +126,7 @@ async function printProjectTotalPriceAndPositionCount() {
 }
 
 function getProjectTotalPrice(project: ProjectDto): number {
-  if (project.serviceSpecifications)
-  {
+  if (project.serviceSpecifications) {
     return project
       .serviceSpecifications[0]
       .totalPrice;
@@ -144,9 +149,9 @@ function getProjectPositionCount(project: ProjectDto): number {
 function getPositionsInElementList(elements: IElementDto[]): number {
   let positionsCount = 0;
   elements.forEach(element => {
-    if (element.elementTypeDiscriminator ===  'PositionDto') {
+    if (element.elementTypeDiscriminator === 'PositionDto') {
       positionsCount++;
-    } else if (element.elementTypeDiscriminator ===  'ServiceSpecificationGroupDto') {
+    } else if (element.elementTypeDiscriminator === 'ServiceSpecificationGroupDto') {
       const group = <ServiceSpecificationGroupDto>element;
       if (group.elements) {
         positionsCount += getPositionsInElementList(group.elements);
@@ -159,6 +164,7 @@ function getPositionsInElementList(elements: IElementDto[]): number {
 async function createNewGaebFile() {
   const avaConversionApi = new AvaConversionApi();
   avaConversionApi.accessToken = accessToken;
+  avaConversionApi.basePath = avacloudBaseUrl;
 
   const avaProject = {
     serviceSpecifications: [
