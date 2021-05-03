@@ -94,7 +94,7 @@ async function roundtripExampleGaebFile() {
   avaConversionClient.accessToken = accessToken;
   avaConversionClient.basePath = avacloudBaseUrl;
   const roundtrippedResult = await avaConversionClient.avaConversionConvertToGaeb(conversionResult.body);
-  console.log('Saving Excel conversion result to: Roundtrip.X86');
+  console.log('Saving GAEB conversion result to: Roundtrip.X86');
   writeFileSync('Roundtrip.X86', roundtrippedResult.body);
 }
 
