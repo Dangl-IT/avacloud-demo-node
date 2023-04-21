@@ -7,7 +7,7 @@
     "start": "tsc && node app.js"
   },
   "dependencies": {
-    "@dangl/avacloud-client-node": "1.10.0"
+    "@dangl/avacloud-client-node": "1.22.0"
   },
   "devDependencies": {
     "typescript": "^3.4.3"
