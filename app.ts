@@ -123,6 +123,7 @@ async function transformGaebToExcel() {
       fileParam,
       true,
       true,
+      true,
       'de'
     );
   console.log('Saving Excel conversion result to:');
