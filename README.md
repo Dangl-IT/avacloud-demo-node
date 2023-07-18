@@ -37,5 +37,10 @@ This example app does four operations:
 3. It creates a new GAEB file and saves it to `CreatedGaebFile.X86`. The GAEB file only has a single position in it and is in the latest GAEB XML format.
 4. It simulates the creation of a complex GAEB file with more content by first transforming the example file to a `ProjectDto` via **AVA**Cloud and then sending this again to the GAEB conversion endpoint, finally saving the result as `Roundtrip.X86`
 
+## Fetch Client
+
+There is also a package without external dependencies, built on `fetch`. The `app-fetch.ts` file has an example for the `@dangl/avacloud-client-fetch` package.
+
 ---
+
 [License](./LICENSE.md)
