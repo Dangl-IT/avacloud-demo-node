@@ -8,7 +8,7 @@
     "start-fetch": "tsc && node app-fetch.js"
   },
   "dependencies": {
-    "@dangl/avacloud-client-node": "1.26.0",
+    "@dangl/avacloud-client-node": "1.52.0-avacloud-preview",
     "@dangl/avacloud-client-fetch": "1.0.1"
   },
   "devDependencies": {

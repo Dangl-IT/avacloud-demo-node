@@ -8,10 +8,10 @@ import {
   AvaConversionApi
 } from '@dangl/avacloud-client-node';
 import { readFileSync, writeFileSync } from 'fs';
-import { post } from 'request';
+import { getOAuth2AccessToken } from './utils';
 
-const clientId = 'InsertYourClientId';
-const clientSecret = 'InsertYourClientSecret';
+const clientId = 'aadf8d01-8c3d-4906-9470-7a909291f923';
+const clientSecret = 'jelIeTA6xkyujGgo9y1R';
 const identityTokenUrl = 'https://identity.dangl-it.com/connect/token';
 const avacloudBaseUrl = 'https://avacloud-api.dangl-it.com';
 
@@ -20,54 +20,9 @@ let accessToken: string;
 
 // App main entry point
 (async () => {
-  await getOAuth2AccessToken();
+  accessToken = await getOAuth2AccessToken(clientId, clientSecret, identityTokenUrl);
   await executeAvaCloudExample();
 })();
-
-async function getOAuth2AccessToken(): Promise<void> {
-  if (!clientId || !clientSecret) {
-    console.log(
-      'Please provide values for clientId and clientSecret. You can find more info in the tutorial at www.dangl-it.com or the AVACloud documenation.'
-    );
-    return;
-  }
-  const clientCredentialsRequest = new Promise(function (resolve, reject) {
-    post(
-      identityTokenUrl,
-      {
-        auth: {
-          username: clientId,
-          password: clientSecret
-        },
-        body: 'grant_type=client_credentials&scope=avacloud',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      },
-      function (err, resp, body) {
-        if (err) {
-          console.log('Error');
-          reject(err);
-        } else {
-          resolve(body);
-        }
-      }
-    );
-  });
-  try {
-    const clientCredentialsResult = await clientCredentialsRequest;
-    accessToken = JSON.parse(<string>clientCredentialsResult)['access_token'];
-    if (!accessToken) {
-      console.log(
-        'Failed to obtain an access token. Have you read the documentation and set up your OAuth2 client?'
-      );
-    }
-  } catch {
-    console.log(
-      'Failed to obtain an access token. Have you read the documentation and set up your OAuth2 client?'
-    );
-  }
-}
 
 async function executeAvaCloudExample() {
   if (!accessToken) {
