@@ -13,6 +13,16 @@
                 "${workspaceFolder}/**/*.js"
             ],
             "preLaunchTask": "build"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "XRechnung",
+            "program": "${workspaceFolder}\\xrechnung.js",
+            "outFiles": [
+                "${workspaceFolder}/**/*.js"
+            ],
+            "preLaunchTask": "build"
         }
     ]
 }
