@@ -1,7 +1,6 @@
 import {
   Invoice,
   XRechnungConversionApi,
-  ProjectDto,
   FileParameter,
   InvoiceType,
   AvaProjectWrapper,
