@@ -10,8 +10,8 @@ import {
 import { readFileSync, writeFileSync } from 'fs';
 import { getOAuth2AccessToken } from './utils';
 
-const clientId = 'aadf8d01-8c3d-4906-9470-7a909291f923';
-const clientSecret = 'jelIeTA6xkyujGgo9y1R';
+const clientId = "YourClientId";
+const clientSecret = "YourClientSecret";
 const identityTokenUrl = 'https://identity.dangl-it.com/connect/token';
 const avacloudBaseUrl = 'https://avacloud-api.dangl-it.com';
 
