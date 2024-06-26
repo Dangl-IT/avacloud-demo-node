@@ -3,10 +3,9 @@ import {
   FileParameter,
   ProjectDto,
   IElementDto,
-  PositionDto,
   ServiceSpecificationGroupDto,
   AvaConversionApi
-} from '@dangl/avacloud-client-node';
+} from '@dangl/avacloud-client-fetch';
 import { readFileSync, writeFileSync } from 'fs';
 import { getOAuth2AccessToken } from './utils';
 
@@ -39,11 +38,8 @@ async function executeAvaCloudExample() {
 function getGaebFile(): FileParameter {
   const gaebFileBuffer = readFileSync(gaebInputFile);
   const fileParam: FileParameter = {
-    value: gaebFileBuffer,
-    options: {
-      filename: 'GAEBXML_EN.X86',
-      contentType: 'application/octet-stream'
-    }
+    data: new Blob([gaebFileBuffer]),
+    fileName: 'GAEBXML_EN.X86',
   };
   return fileParam;
 }
@@ -62,9 +58,10 @@ async function roundtripExampleGaebFile() {
   avaConversionClient.accessToken = accessToken;
   avaConversionClient.basePath = avacloudBaseUrl;
   const roundtrippedResult =
-    await avaConversionClient.avaConversionConvertToGaeb(conversionResult.body);
+    await avaConversionClient.avaConversionConvertToGaeb(conversionResult.result);
   console.log('Saving GAEB conversion result to: Roundtrip.X86');
-  writeFileSync('Roundtrip.X86', roundtrippedResult.body);
+  const buffer = await roundtrippedResult.result.data.arrayBuffer();
+  writeFileSync('Roundtrip.X86', new Uint8Array(buffer));
 }
 
 async function transformGaebToExcel() {
@@ -83,7 +80,8 @@ async function transformGaebToExcel() {
     );
   console.log('Saving Excel conversion result to:');
   console.log(gaebInputFile + '.xlsx');
-  writeFileSync(gaebInputFile + '.xlsx', conversionResult.body);
+  const buffer = await conversionResult.result.data.arrayBuffer();
+  writeFileSync(gaebInputFile + '.xlsx', new Uint8Array(buffer));
 }
 
 async function printProjectTotalPriceAndPositionCount() {
@@ -95,7 +93,7 @@ async function printProjectTotalPriceAndPositionCount() {
   // The avaProject variable is of type ProjectDto and contains the unified project model
   const avaProject = (
     await gaebConversionClient.gaebConversionConvertToAva(fileParam)
-  ).body;
+  ).result;
   const totalPrice = getProjectTotalPrice(avaProject);
   console.log('Project total price (net): ' + totalPrice);
   const countOfPositions = getProjectPositionCount(avaProject);
@@ -174,5 +172,6 @@ async function createNewGaebFile() {
     await avaConversionApi.avaConversionConvertToGaeb(
       <ProjectDto>(<any>avaProject)
     );
-  writeFileSync('CreatedGaebFile.X86', gaebCreationResponse.body);
+  const buffer = await gaebCreationResponse.result.data.arrayBuffer();
+  writeFileSync('CreatedGaebFile.X86', new Uint8Array(buffer));
 }
