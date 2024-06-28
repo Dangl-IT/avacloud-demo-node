@@ -7,7 +7,7 @@ import {
   SourceType,
   Organization,
   InvoiceTotals,
-} from "@dangl/avacloud-client-fetch";
+} from "@dangl/avacloud-client-node";
 import { readFileSync, writeFileSync } from "fs";
 
 import { getOAuth2AccessToken } from "./utils";
