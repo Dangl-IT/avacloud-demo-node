@@ -41,6 +41,27 @@ This example app does four operations:
 
 There is also a package without external dependencies, built on `fetch`. The `app-fetch.ts` file has an example for the `@dangl/avacloud-client-fetch` package.
 
+## AVACloud Key Features
+
+- Can read all GAEB90, GAEB2000 and GAEB XML files. It includes many heuristics and eror corrections that can recover incorrect files
+- Hassle-free import: Just pass the file to **AVACloud**, format detection and error recovery happens automatically
+- Advanced code, built on years of experience, allows the preservation of most information even when converting to an earlier version of the GAEB standard
+- Automatic calculation of prices, quantities and more - **AVACloud** can do much more beyond just converting your data
+- Over **250.000** tests are run automatically on every commit. Tests range from unit tests in the conversion code up to full integration tests mirroring a full production environment
+
+### Supported Formats
+
+![AVACloud Features](./img/AVACloud%20Diagram%20EN.png)
+
+**... and many more!**
+
+### UI Components
+
+Easy integration with prebuilt UI components is possible within minutes:
+
+- Either by using our Angular specific `@dangl/angular-ava` package: <https://www.npmjs.com/package/@dangl/angular-ava>
+- Or with our framework agnostict Html web component implementation that run anywhere, either in web apps or locally in a web view: <https://www.npmjs.com/package/@dangl/web-components-ava>
+
 ---
 
 [License](./LICENSE.md)
